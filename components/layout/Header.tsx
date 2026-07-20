@@ -52,7 +52,7 @@ export function Header() {
     <header className="sticky top-0 z-50 border-b border-outline-variant/50 bg-background/90 backdrop-blur-sm">
       <Container className="flex h-16 items-center justify-between lg:h-20">
         <a href="#hero" className="shrink-0">
-          <Logo />
+          <Logo priority />
         </a>
 
         <nav className="hidden flex-1 items-center justify-center gap-10 lg:flex">

@@ -195,6 +195,19 @@
 }
 
 /* ----------------------------------------------------------------
+   Transición circular del ThemeToggle (ver components/layout/ThemeToggle.tsx):
+   anima manualmente un clip-path circular sobre estos pseudo-elementos vía
+   Web Animations API. Se desactiva el cross-fade por defecto del navegador
+   para que solo se vea el círculo expandiéndose desde el punto de click —
+   mismo patrón ya validado en portafolio_next/ThemeToggle.tsx.
+   ---------------------------------------------------------------- */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* ----------------------------------------------------------------
    Escala tipográfica oficial (DESIGN.md / blueprint Sección 7).
    Clases utilitarias planas, no theme tokens — se aplican directo
    a los elementos de heading/body/label de cada sección.

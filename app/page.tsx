@@ -1,6 +1,7 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/sections/Hero";
+import { OriginShowcase } from "@/components/sections/OriginShowcase";
 import { MenuInfusiones } from "@/components/sections/menu/MenuInfusiones";
 import { Nosotros } from "@/components/sections/Nosotros";
 import { Ubicacion } from "@/components/sections/Ubicacion";
@@ -12,8 +13,10 @@ export default function Home() {
       <Header />
       <main className="flex flex-1 flex-col">
         <Hero />
-        <MenuInfusiones />
+        <OriginShowcase />
         <Nosotros />
+        <MenuInfusiones />
+        
         <Ubicacion />
         <Contacto />
       </main>

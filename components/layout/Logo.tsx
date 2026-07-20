@@ -5,18 +5,26 @@ import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 import { useHydrated } from "@/components/layout/useHydrated";
 
-export function Logo({ className, iconSize = 36 }: { className?: string; iconSize?: number }) {
+export function Logo({
+  className,
+  iconSize = 36,
+  priority = false,
+}: {
+  className?: string;
+  iconSize?: number;
+  priority?: boolean;
+}) {
   const { resolvedTheme } = useTheme();
   const mounted = useHydrated();
 
   // El logo se selecciona según `resolvedTheme` de next-themes, nunca con un
   // filtro CSS sobre un solo archivo (regla no negociable). Antes de montar,
   // usamos la versión light por defecto para evitar parpadeo de layout.
-  const src = mounted && resolvedTheme === "dark" ? "/logo-dark.svg" : "/logo-light.svg";
+  const src = mounted && resolvedTheme === "dark" ? "/akita_inu_for_bg_dark.png" : "/akita_inu_for_bg_white.png";
 
   return (
     <span className={cn("inline-flex items-center gap-2.5", className)}>
-      <Image src={src} alt="" width={iconSize} height={iconSize} priority />
+      <Image src={src} alt="" width={iconSize} height={iconSize} priority={priority} />
       <span className="font-heading font-bold uppercase leading-[0.95] tracking-wide text-on-background text-sm">
         Apolo
         <br />

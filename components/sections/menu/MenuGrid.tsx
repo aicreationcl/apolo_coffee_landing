@@ -11,7 +11,7 @@ export function MenuGrid({ items }: { items: MenuItem[] }) {
     <div
       ref={gridRef}
       key={items.map((item) => item.id).join("-")}
-      className="grid grid-cols-1 gap-6 py-10 sm:grid-cols-2 lg:grid-cols-3"
+      className="flex flex-col py-10 lg:grid lg:grid-cols-2 lg:gap-x-16"
     >
       {items.map((item) => (
         <MenuCard key={item.id} item={item} />

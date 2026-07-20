@@ -7,45 +7,34 @@ import { test, expect } from "@playwright/test";
 // devolviendo `false` hasta anidarlo así).
 test.use({ contextOptions: { reducedMotion: "reduce" } });
 
-test("con prefers-reduced-motion no hay pinning en el Roast Showcase", async ({ page }) => {
+test("con prefers-reduced-motion no hay parallax en el Origin Showcase", async ({ page }) => {
   await page.goto("/");
-  await page.locator("#menu").scrollIntoViewIfNeeded();
+  const image = page.getByTestId("origin-showcase-image");
+  await image.scrollIntoViewIfNeeded();
   await page.waitForTimeout(300);
 
-  const showcase = page.getByTestId("roast-showcase");
-  const topBefore = (await showcase.boundingBox())?.y ?? 0;
+  const transformBefore = await image.evaluate((el) => getComputedStyle(el).transform);
 
   for (let i = 0; i < 5; i++) {
     await page.mouse.wheel(0, 200);
     await page.waitForTimeout(100);
   }
 
-  const topAfter = (await showcase.boundingBox())?.y ?? 0;
-  // Sin pin, el contenedor se desplaza con el scroll normal del documento
-  // en vez de quedar fijo en 0.
-  expect(topAfter).not.toBe(topBefore);
-
-  // Los tres tuestes deben quedar visibles apilados (markup estático, sin pin).
-  await expect(page.getByText("Tueste Claro")).toBeVisible();
-  await expect(page.getByText("Tueste Medio")).toBeVisible();
-  await expect(page.getByText("Tueste Oscuro")).toBeVisible();
+  // Bajo reduced-motion, el efecto de GSAP nunca crea el tween de scrub, así
+  // que el transform de la imagen no debe cambiar con el scroll.
+  const transformAfter = await image.evaluate((el) => getComputedStyle(el).transform);
+  expect(transformAfter).toBe(transformBefore);
 });
 
-test("con prefers-reduced-motion no hay tilt 3D activo en las MenuCard", async ({ page }) => {
+test("con prefers-reduced-motion el reveal en cascada de la carta es inmediato", async ({ page }) => {
   await page.goto("/");
   await page.locator("#menu").scrollIntoViewIfNeeded();
-  // Espera a que termine el reveal de entrada de las MenuCard (useStaggerReveal)
-  // para no confundir su propio tween de montaje con el hover del tilt.
-  await page.waitForTimeout(500);
-
-  const card = page.locator("#menu h4").first().locator("../../..");
-  const transformBefore = await card.evaluate((el) => getComputedStyle(el).transform);
-
-  await card.hover();
+  // Bajo reduced-motion, useStaggerReveal (MenuGrid) colapsa stagger/duration
+  // a ~0 en vez de animar la entrada en cascada — las filas deben quedar
+  // visibles casi de inmediato, sin depender de esperar el tween completo.
   await page.waitForTimeout(200);
 
-  // Bajo reduced-motion, useMagneticTilt nunca adjunta sus listeners de
-  // pointermove, así que el hover no debe alterar el transform del card.
-  const transformAfter = await card.evaluate((el) => getComputedStyle(el).transform);
-  expect(transformAfter).toBe(transformBefore);
+  const firstRow = page.locator("#menu h4").first().locator("xpath=../../..");
+  const opacity = await firstRow.evaluate((el) => Number(getComputedStyle(el).opacity));
+  expect(opacity).toBe(1);
 });
